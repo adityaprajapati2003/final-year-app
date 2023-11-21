@@ -1,20 +1,63 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useFonts } from "expo-font";
+import ReactNavigation from "./Router/ReactNavigation";
+import { Provider, useDispatch ,useSelector} from "react-redux";
+import { store } from "./toolkit/store";
+import React, { useEffect } from 'react';
+import { NativeBaseProvider} from "native-base";
+import { View,Text } from "react-native";
+import AuthNavigator from "./Router/AuthNavigator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { login } from "./toolkit/reducers/UserAuth";
+import * as NavigationBar from 'expo-navigation-bar';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+function App (){ 
+  const isLoggedIn = useSelector((state)=>state.user.isLoggedIn);
+
+  const dispatch = useDispatch();
+  const getUser = async()=>{
+
+    const savedUser = await AsyncStorage.getItem("user");
+    
+    if(savedUser){
+      const savedUserAsString = JSON.parse(savedUser);
+      const {email,password} = savedUserAsString;
+      dispatch(login({email,password}));
+    }
+  }
+  getUser();
+
+  const visibility = NavigationBar.useVisibility()
+  useEffect(async()=>{
+    const color = await NavigationBar.getBackgroundColorAsync();
+    NavigationBar.setBackgroundColorAsync("#f0f2f1");
+    NavigationBar.setButtonStyleAsync("black");
+  },[]);
+
+  let [font]=useFonts({
+    'Pregular':require('./assets/fonts/FontsFree-Net-OCPajaro-Regular.ttf'),
+  })
+  
+  if(!font){
+    return <View><Text>bbbb</Text></View>
+  }
+  
+  if(isLoggedIn){
+    return (
+      <NativeBaseProvider>
+        <ReactNavigation onLayout={font}/>
+      </NativeBaseProvider>
+      )
+  
+  }else{
+    return <AuthNavigator onLayout={font}/>
+  }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default ()=>{
+  
+  return(
+    <Provider store={store}>
+        <App/>
+    </Provider>
+  )
+}
