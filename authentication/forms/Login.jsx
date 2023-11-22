@@ -16,26 +16,31 @@ import { loginSchema } from "../schema/loginSchema";
 import { auth } from "../firebase/firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, COMMONTEXT, TEXTCOLOR } from "../../constants";
+import { useDispatch } from "react-redux";
+import { login } from "../../toolkit/reducers/UserAuth";
 
 const Login = () => {
+
+  const dispatch = useDispatch();
 
   //Event for handling login
   const HandleLogin = async (values) => {
     try {
+
       const { email, password } = values;
 
       await signInWithEmailAndPassword(auth, email, password);
-
-      const user = { email: values.email, password: values.password };
+      
+      //Dispatching values
+      dispatch(login({email}));
+    
+      // saving the email address
+      const user = {email};
       const userData = JSON.stringify(user);
+      await AsyncStorage.setItem("user",userData);
 
-      // Storing Data in AsyncStorage(localStorage)
-
-      if (user) {
-        await AsyncStorage.setItem("user", userData);
-        console.log("done");
-      }
-    } catch (e) {
+      
+    }catch(e){
       console.log("new", e);
     }
   };

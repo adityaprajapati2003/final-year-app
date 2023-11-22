@@ -23,8 +23,10 @@ import wmenu from '../assets/icons/wmenu.png';
 import darrow from '../assets/icons/darrow.png';
 import uparrow from '../assets/icons/uparrow.png';
 import filter from '../assets/icons/filter.png';
+import logout from '../assets/icons/shutdown.png';
 
 export default {
+    logout,
     filter,
     darrow,
     uparrow,

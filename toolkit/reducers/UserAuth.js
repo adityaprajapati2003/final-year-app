@@ -5,7 +5,6 @@ const UserAuth = createSlice({
   initialState: {
     isLoggedIn: false,
     username: "",
-    password: "",
     street_address:"",
     apartment:"",
     State:"",
@@ -23,12 +22,10 @@ const UserAuth = createSlice({
     login: (state, action) => {
       state.isLoggedIn = true;
       state.email = action.payload.email;
-      state.password = action.payload.password;
     },
     logout: (state) => {
       state.isLoggedIn = false;
       state.email = "";
-      state.password = "";
     },
     address: (state, action) => {
       const { street_address, apartment, State, city, zipcode } = action.payload;

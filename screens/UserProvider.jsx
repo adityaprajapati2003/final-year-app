@@ -11,22 +11,29 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useState, useEffect, memo } from "react";
-import { COLORS, icons, COMMONTEXT } from "../constants";
+import { COLORS, icons, COMMONTEXT, TEXTCOLOR } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "native-base";
 import { useDispatch, useSelector } from "react-redux";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { firestore } from "../authentication/firebase/firebase";
-import { address, userimage, contact } from "../toolkit/reducers/UserAuth";
+import { address, userimage, contact,logout } from "../toolkit/reducers/UserAuth";
 import Model from "react-native-modal";
 import { SimpleAnimation } from "react-native-simple-animations";
 import ImageForm from "../components/user/ImageForm";
 import MemoizedProfileForm from "../components/user/ProfileForm";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UserProvider = () => {
 
   //View Bottom sheet
   const [isVisible, setAsVisible] = useState(false);
+
+  // logout 
+  const handleLogout = async()=>{
+    await AsyncStorage.removeItem('user');
+    dispatch_values(logout());
+  }
   
   const [user_data, setUser_data] = useState({
     image: null,
@@ -149,7 +156,6 @@ const UserProvider = () => {
             >
               <Image source={icons.edit} style={styles.editIcon} />
             </TouchableOpacity>
-
             <Text style={styles.email}>{getUserEmail}</Text>
           </View>
 
@@ -246,6 +252,12 @@ const UserProvider = () => {
             </TouchableOpacity>
           </View>
 
+          {/* logout btn */}
+          <TouchableOpacity className='mt-5' onLongPress={handleLogout}>
+              <Text style={{...COMMONTEXT.semisecondary,color:TEXTCOLOR.secondary,textAlign:'center',marginBottom:10}}>Long press to Logout</Text>
+              <Image source={icons.logout} style={{width:40,height:40,alignSelf:'center'}}/>
+          </TouchableOpacity>
+
           {/* Bottom sheets */}
 
           <Model
@@ -264,6 +276,7 @@ const UserProvider = () => {
               </ScrollView>
             </SimpleAnimation>
           </Model>
+
         </ScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
