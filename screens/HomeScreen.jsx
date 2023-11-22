@@ -12,11 +12,14 @@ import {
 
 const HomeScreen = () => {
   const [data, setData] = useState([]);
-  useEffect(() => {
-    Client.fetch(`*[ _type == "saree" ]`).then((res) => {
+  
+  const getData =async()=>{
+    await Client.fetch(`*[ _type == "saree" ]`).then((res) => {
       setData(res);
     });
-  }, []);
+  }
+  getData();
+
   const ArrayReducer = data.slice(4, 12);
   const RowArrayReducer = data.slice(0, 5);
 

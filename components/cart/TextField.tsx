@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native'
 import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen"
+import { COLORS, COMMONTEXT, TEXTCOLOR } from '../../constants'
 
 type Props = React.ComponentProps<typeof TextInput> & {
   label: string
@@ -40,7 +41,7 @@ const TextField: React.FC<Props> = (props) => {
     }).start()
   }, [focusAnim, isFocused, value])
 
-  let color = isFocused ? 'black' : 'gray'
+  let color = isFocused ? COLORS.motoblue : 'gray'
   if (errorText) {
     color = '#B00020'
   }
@@ -75,7 +76,7 @@ const TextField: React.FC<Props> = (props) => {
                 {
                   scale: focusAnim.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [1, 0.75],
+                    outputRange: [1, 0.85],
                   }),
                 },
                 {
@@ -98,7 +99,7 @@ const TextField: React.FC<Props> = (props) => {
             style={[
               styles.label,
               {
-                color:"aliceblue",
+                color:'black',
               },
             ]}
           >
@@ -120,25 +121,22 @@ const styles = StyleSheet.create({
     padding: 18,
     borderWidth: 1,
     borderRadius: 4,
-    fontFamily: 'Emedium',
-    fontSize: 16,
-    color:'aliceblue',
+    ...COMMONTEXT.primary,
   },
   labelContainer: {
     position: 'absolute',
     paddingHorizontal: 8,
-    
   },
   label: {
-    fontFamily: 'Emedium',
-    fontSize: 16,
+    ...COMMONTEXT.secondary,
+    color:TEXTCOLOR.secondary,
   },
   error: {
     marginTop: 4,
     marginLeft: 12,
     fontSize: 12,
-    color: 'aliceblue',
-    fontFamily: 'Emedium',
+    ...COMMONTEXT.primary,
+    color:TEXTCOLOR.secondary,
   },
 })
 

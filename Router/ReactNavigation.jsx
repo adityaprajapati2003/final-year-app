@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen";
 import HomeNavigator from "./HomeNavigator";
 import UserNavigator from "./UserNavigator";
+import React from "react";
 
 const Tab=createBottomTabNavigator();
 

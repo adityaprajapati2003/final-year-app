@@ -13,7 +13,8 @@ import {
 } from "firebase/firestore";
 import {auth, firestore} from "../../authentication/firebase/firebase";
 import { fetchSignInMethodsForEmail } from "firebase/auth";
-import { icons } from "../../constants";
+import { COLORS, TEXTCOLOR, icons } from "../../constants";
+import { COMMONTEXT } from "../../constants";
 
 const ProfileForm = () => {
   
@@ -67,7 +68,7 @@ const ProfileForm = () => {
     <View className="p-5">
       <View className='flex flex-row justify-between pb-5'>
         <Text style={styles.header}>Address</Text>
-        <TouchableOpacity onPress={()=>ResetStates()}>
+        <TouchableOpacity style={styles.back} className="shadow-xl shadow-black" onPress={()=>ResetStates()}>
             <Image source={icons.reset} style={styles.reset}/>
         </TouchableOpacity>
       </View>
@@ -106,49 +107,44 @@ const ProfileForm = () => {
           onChangeText={(text) => setContact({ ...contact, MobileNo: text })}
         />
       </View>
-      <TouchableOpacity className='bg-gradient-to-r from-green-400 to-blue-500' onPress={()=>checkUserAndSetProfileData(getUserEmail)}>
+      <TouchableOpacity style={styles.savebtn} className="shadow-xl shadow-black" onPress={()=>checkUserAndSetProfileData(getUserEmail)}>
           <Text style={styles.text}>Save Profile</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default ProfileForm;
+const MemoizedProfileForm = React.memo(ProfileForm);
+export default MemoizedProfileForm;
+
 
 const styles = StyleSheet.create({
+  savebtn:{
+    padding:10,
+    backgroundColor:COLORS.motoblue,
+    width:vw(50),
+    alignSelf:'center',
+    borderRadius:30,
+  },
   text: {
-    color: "aliceblue",
-    fontSize: 25,
-    fontFamily: "Emedium",
     height: vh(4),
-    marginTop: vh(2),
-    marginBottom: vh(2),
     textAlign: "center",
+    color:TEXTCOLOR.primary,
+    ...COMMONTEXT.fourth,
   },
   header: {
-    color: "aliceblue",
-    fontSize: 22,
-    fontFamily: "Emedium",
     height: vh(4),
     marginBottom: vh(1),
     paddingTop:vh(1),
-  },
-  txt: {
-    color: "aliceblue",
-    fontSize: 20,
-    fontFamily: "Emedium",
-    height: vh(3.5),
-    width: vw(40),
-  },
-  txtBtn: {
-    color: "aliceblue",
-    fontSize: 20,
-    fontFamily: "Emedium",
-    height: vh(3.5),
-    textAlign: "center",
+    ...COMMONTEXT.tertiary,
   },
   reset:{
     width:40,
     height:40,
+  },
+  back:{
+    padding:2,
+    backgroundColor:COLORS.motoblue,
+    borderRadius:50,
   }
 });

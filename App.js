@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "./toolkit/reducers/UserAuth";
 import * as NavigationBar from 'expo-navigation-bar';
 
+
 function App (){ 
   const isLoggedIn = useSelector((state)=>state.user.isLoggedIn);
 
@@ -25,13 +26,9 @@ function App (){
     }
   }
   getUser();
+  NavigationBar.setBackgroundColorAsync("#f0f2f1");
+  NavigationBar.setButtonStyleAsync("dark");
 
-  const visibility = NavigationBar.useVisibility()
-  useEffect(async()=>{
-    const color = await NavigationBar.getBackgroundColorAsync();
-    NavigationBar.setBackgroundColorAsync("#f0f2f1");
-    NavigationBar.setButtonStyleAsync("black");
-  },[]);
 
   let [font]=useFonts({
     'Pregular':require('./assets/fonts/FontsFree-Net-OCPajaro-Regular.ttf'),

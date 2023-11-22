@@ -13,19 +13,21 @@ import {
 import React, { useState, useEffect, memo } from "react";
 import { COLORS, icons, COMMONTEXT } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Model from "react-native-modal";
-import ImageForm from "../components/user/ImageForm";
-import ProfileForm from "../components/user/ProfileForm";
 import { KeyboardAvoidingView } from "native-base";
 import { useDispatch, useSelector } from "react-redux";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { firestore } from "../authentication/firebase/firebase";
 import { address, userimage, contact } from "../toolkit/reducers/UserAuth";
+import Model from "react-native-modal";
+import { SimpleAnimation } from "react-native-simple-animations";
+import ImageForm from "../components/user/ImageForm";
+import MemoizedProfileForm from "../components/user/ProfileForm";
 
 const UserProvider = () => {
+
   //View Bottom sheet
   const [isVisible, setAsVisible] = useState(false);
-
+  
   const [user_data, setUser_data] = useState({
     image: null,
     street_address: "",
@@ -110,10 +112,10 @@ const UserProvider = () => {
   }, [getUserEmail, dispatch_values]);
 
   // user status
-  const [isDown, setAsDown] = useState(false);
+  const [isDown, setAsDown] = useState(true);
 
   // user info
-  const [isUp, setAsUp] = useState(false);
+  const [isUp, setAsUp] = useState(true);
 
   return (
     <KeyboardAvoidingView>
@@ -200,29 +202,41 @@ const UserProvider = () => {
             <View className="flex flex-row justify-between">
               <Text style={styles.header}>My Personal Info</Text>
               <TouchableOpacity onPress={() => setAsUp(!isUp)}>
-                <Image source={isUp ? icons.darrow : icons.uparrow} style={styles.icon} />
+                <Image
+                  source={isUp ? icons.darrow : icons.uparrow}
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
-            {
-              !isUp ?
-                <View>
-                  <View style={styles.Borderplz}>
-                    <Text style={styles.header}>Address</Text>
-                    <View>
-                      <Text style={styles.text} className="pl-5">{user_data.street_address},{user_data.apartment},{user_data.state}</Text>
-                      <Text style={styles.text} className="pl-5">{user_data.city} - {user_data.zipcode}</Text>
-                    </View>
+            {!isUp ? (
+              <View>
+                <View style={styles.Borderplz}>
+                  <Text style={styles.header}>Address</Text>
+                  <View>
+                    <Text style={styles.text} className="pl-5">
+                      {user_data.street_address},{user_data.apartment},
+                      {user_data.state}
+                    </Text>
+                    <Text style={styles.text} className="pl-5">
+                      {user_data.city} - {user_data.zipcode}
+                    </Text>
                   </View>
-                  <View style={styles.Borderplz}>
-                    <Text style={styles.header}>Contact</Text>
-                    <View>
-                      <Text style={styles.text} className="pl-5">Mobile No : {user_data.mobileno}</Text>
-                      <Text style={styles.text} className="pl-5">Email Address : {user_data.email}</Text>
-                    </View>
+                </View>
+                <View style={styles.Borderplz}>
+                  <Text style={styles.header}>Contact</Text>
+                  <View>
+                    <Text style={styles.text} className="pl-5">
+                      Mobile No : {user_data.mobileno}
+                    </Text>
+                    <Text style={styles.text} className="pl-5">
+                      Email Address : {user_data.email}
+                    </Text>
                   </View>
-                </View> 
-                : ""
-            }
+                </View>
+              </View>
+            ) : (
+              ""
+            )}
           </View>
 
           {/* user's order status */}
@@ -233,16 +247,22 @@ const UserProvider = () => {
           </View>
 
           {/* Bottom sheets */}
+
           <Model
             isVisible={isVisible}
             onBackdropPress={() => setAsVisible(!isVisible)}
             style={styles.popup}
             propagateSwipe
+            animationIn={'slideInLeft'}
+            animationInTiming={500}
+            animationOutTiming={200}
           >
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <ImageForm />
-              <ProfileForm />
-            </ScrollView>
+            <SimpleAnimation delay={500} duration={1000} fade staticType="zoom">
+              <ScrollView showsVerticalScrollIndicator={false}>
+                  <ImageForm/>
+                  <MemoizedProfileForm/>
+              </ScrollView>
+            </SimpleAnimation>
           </Model>
         </ScrollView>
       </SafeAreaView>
@@ -260,12 +280,12 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
   },
-  Borderplz:{
-    borderWidth:1,
-    borderColor:COLORS.motoblue,
-    borderRadius:25,
-    padding:10,
-    marginTop:10,
+  Borderplz: {
+    borderWidth: 1,
+    borderColor: COLORS.motoblue,
+    borderRadius: 25,
+    padding: 10,
+    marginTop: 10,
   },
   icon: {
     width: 25,
@@ -275,7 +295,12 @@ const styles = StyleSheet.create({
     minHeight: vh(4),
     ...COMMONTEXT.secondary,
   },
-  header:{
+  textLoad:{
+    minHeight: vh(6),
+    alignSelf:"center",
+    ...COMMONTEXT.fourth,
+  },
+  header: {
     minHeight: vh(4),
     ...COMMONTEXT.semisecondary,
   },
@@ -330,13 +355,13 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: COLORS.gradientGray,
   },
-  popup:{
-    marginTop:vh(20),
-    marginLeft:vw(5),
-    marginRight:vw(5),
+  popup: {
+    marginTop: vh(20),
+    marginLeft: vw(5),
+    marginRight: vw(5),
     backgroundColor: COLORS.gradientGray,
-    borderRadius:30,
-  }
+    borderRadius: 30,
+  },
 });
 
 const MemoizedUserProvider = memo(UserProvider);

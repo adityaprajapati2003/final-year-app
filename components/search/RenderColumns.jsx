@@ -4,17 +4,17 @@ import {
   widthPercentageToDP as vw,
   heightPercentageToDP as vh,
 } from "react-native-responsive-screen";
-// import { SimpleGrid } from 'react-native-super-grid';
+import { SimpleGrid } from 'react-native-super-grid';
 import MasonryList from "@react-native-seoul/masonry-list";
-import ColumnView from "./ColumnView";
-import { COMMONTEXT } from "../../constants";
+import ColumnView from "../home/ColumnView";
+import { COMMONTEXT, icons } from "../../constants";
 
-const ColumnViewHome = ({ Data }) => {
+const RenderColumns = ({ Data }) => {
     
   return (
     <View style={styles.MainContainer}>
      
-      {/* <SimpleGrid data={Data} itemDimension={180} renderItem={({item})=>(<ColumnView Item={item} Icon={icons.r} PageRef={'ItemScreen'}/>)}/> */}
+      {/* <SimpleGrid data={Data} itemDimension={180} renderItem={({item,index})=>(<ColumnView item={item} index={index}/>)}/> */}
       <MasonryList
         data={Data}
         keyExtractor={(item)=>item.id}
@@ -23,7 +23,6 @@ const ColumnViewHome = ({ Data }) => {
         contentContainerStyle={{paddingHorizontal:25 , marginBottom:vh(5)}}
         renderItem={({item,i})=>(<ColumnView item={item} index={i}/>)}
         onEndReachedThreshold={0.1}
-        onEndReached={<Text style={styles.HeaderText}>Page endss</Text>}
       />
     </View>
   );
@@ -43,4 +42,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ColumnViewHome;
+export default RenderColumns;

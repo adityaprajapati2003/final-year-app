@@ -22,8 +22,10 @@ import wcart from '../assets/icons/wcart.png';
 import wmenu from '../assets/icons/wmenu.png';
 import darrow from '../assets/icons/darrow.png';
 import uparrow from '../assets/icons/uparrow.png';
+import filter from '../assets/icons/filter.png';
 
 export default {
+    filter,
     darrow,
     uparrow,
     whome,

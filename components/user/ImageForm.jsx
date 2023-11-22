@@ -14,7 +14,7 @@ import {
 import { useSelector } from "react-redux";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { collection, setDoc, doc } from "firebase/firestore";
-import { COLORS ,COMMONTEXT} from "../../constants";
+import { COLORS ,COMMONTEXT, TEXTCOLOR} from "../../constants";
 
 const ImageForm = () => {
   const [imagefile, setImageFile] = useState(
@@ -85,20 +85,20 @@ const ImageForm = () => {
 
   return (
     <View className="p-5 pb-0">
-      <Text style={styles.text}>Profile details</Text>
+      <Text style={styles.mainHeader}>Profile details</Text>
       <Text style={styles.header}>Profile Image</Text>
       <View className="flex flex-row justify-between">
         <View className="border-dashed border-2 border-slate-900 p-3">
-          <Text style={styles.txt}>
+          <Text style={styles.box}>
             {imagefile ? imageName(imagefile) : ".png, .jpg, .jpeg, .webp"}
           </Text>
         </View>
         <TouchableOpacity
           onPress={pickImage}
-          className=" p-3"
+          className="p-3 justify-center shadow-xl shadow-black"
           style={styles.upbox}
         >
-          <Text style={styles.txtBtn}>
+          <Text style={styles.box}>
             {imagefile ? "Update Image" : "Upload Image"}
           </Text>
         </TouchableOpacity>
@@ -110,35 +110,26 @@ const ImageForm = () => {
 export default ImageForm;
 
 const styles = StyleSheet.create({
-  text: {
-    minHeight: vh(4),
-    marginBottom: vh(2),
-    textAlign: "center",
-    ...COMMONTEXT.secondary,
+  mainHeader:{
+    ...COMMONTEXT.fourth,
+    marginBottom:vh(2),
+    alignSelf:'center',
   },
-  header: {
-    color: "aliceblue",
-    fontSize: 22,
-    fontFamily: "Emedium",
-    height: vh(4),
-    marginBottom: vh(1),
-  },
-  txt: {
-    color: "aliceblue",
-    fontSize: 20,
-    fontFamily: "Emedium",
-    height: vh(3.5),
-    width: vw(40),
-  },
-  txtBtn: {
-    color: "aliceblue",
-    fontSize: 20,
-    fontFamily: "Emedium",
-    height: vh(3.5),
-    textAlign: "center",
+  header:{
+    ...COMMONTEXT.tertiary,
+    marginBottom:vh(1.5),
   },
   upbox: {
     width: vw(30),
     backgroundColor:COLORS.motoblue,
+    maxHeight:vh(10),
+    borderRadius:15,
   },
+  box:{
+    width:vw(40),
+    ...COMMONTEXT.secondary,
+    color:TEXTCOLOR.primary,
+    maxHeight:vh(5),
+  }
+
 });
