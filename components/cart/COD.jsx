@@ -3,7 +3,6 @@ import React from 'react'
 import { Box, Select } from 'native-base'
 import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen"
 
-
 const COD = () => {
   return (
     <View className="mb-3">
@@ -19,6 +18,7 @@ const COD = () => {
     </View>
   )
 }
+
 const styles = StyleSheet.create({
   Dropdown:{
     fontFamily:'Emedium',

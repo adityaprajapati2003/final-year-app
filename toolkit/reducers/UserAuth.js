@@ -16,7 +16,7 @@ const UserAuth = createSlice({
     thrifts:"",
     owned:"",
     image:"",
-    page:"",
+    page:null,
   },
   reducers: {
     login: (state, action) => {
@@ -49,10 +49,12 @@ const UserAuth = createSlice({
     userimage:(state,action)=>{
       state.image=action.payload.image;
     },
-    setPage:(state,action)=>{
-      state.page=action.payload.page;
+    page:(state,action)=>{
+      state.page = action.payload.page;
     }
+    
   },
 });
-export const { login, logout, address, contact, counter, userimage, setPage} = UserAuth.actions;
+
+export const { login, logout, address, contact, counter, userimage,page} = UserAuth.actions;
 export default UserAuth.reducer;

@@ -5,10 +5,7 @@ import Header from "../components/home/Header";
 import ColumnViewHome from "../components/home/ColumnViewHome";
 import RowViewHome from "../components/home/RowViewHome";
 import Client from "../sanity";
-import {
-  widthPercentageToDP as vw,
-  heightPercentageToDP as vh,
-} from "react-native-responsive-screen";
+import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen";
 
 const HomeScreen = () => {
   const [data, setData] = useState([]);

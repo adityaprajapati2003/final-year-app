@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/k.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.kajriapplication"
     },
     "web": {
       "favicon": "./assets/icons/k.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1cc0d859-079d-4056-8f54-fac667343d8e"
+      }
+    },
+    "owner": "adityabee"
   }
 }

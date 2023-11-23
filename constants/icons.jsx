@@ -24,8 +24,16 @@ import darrow from '../assets/icons/darrow.png';
 import uparrow from '../assets/icons/uparrow.png';
 import filter from '../assets/icons/filter.png';
 import logout from '../assets/icons/shutdown.png';
+import truck from '../assets/icons/truck.png';
+import replace from '../assets/icons/replace.png';
+import cod from '../assets/icons/cod.png';
+import legal from '../assets/icons/legal.png';
 
 export default {
+    truck,
+    cod,
+    replace,
+    legal,
     logout,
     filter,
     darrow,
