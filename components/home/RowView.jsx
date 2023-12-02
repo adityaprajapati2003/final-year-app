@@ -7,7 +7,6 @@ import {
   heightPercentageToDP as vh,
 } from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native";
-import CartButton from "../cart/CartButton";
 import { COLORS, icons, COMMONTEXT, TEXTCOLOR } from "../../constants";
 import { urlFor } from "../../sanity";
 
@@ -21,9 +20,9 @@ const RowView = ({ Item, PageRef, Icon }) => {
   };
 
   return (
-    <View style={styles.MainViewContainer} className='shadow-xl shadow-gray-950'>
+    <View style={styles.MainViewContainer} className='shadow-xl shadow-gray-950 bg-slate-300'>
       <TouchableOpacity onPress={() => takeMeTo.navigate(PageRef, { ...Item })} >
-        <Image
+        <Image 
           source={{ uri: urlFor(Item.image).url() }}
           style={styles.MainImageContainer}
         />
@@ -38,11 +37,13 @@ const RowView = ({ Item, PageRef, Icon }) => {
               <Text style={styles.cost}>{Item.cost}</Text>
             </View>
           </View>
-          <CartButton
-            Icon={icons.right}
-            C1={styles.CartBtn}
-            C2={styles.CartBtn.iconbtn}
-          />
+          
+          <View style={styles.CartBtn} className="backdrop-blur-md bg-gray-200/50">
+            <TouchableOpacity onPress={() => takeMeTo.navigate(PageRef, { ...Item })}>
+                <Image source={icons.right} style={styles.CartBtn.iconbtn}/>
+            </TouchableOpacity>
+          </View>
+
         </View>
       </TouchableOpacity>
     </View>
@@ -56,7 +57,6 @@ const styles = StyleSheet.create({
     marginRight: vh(3),
     marginBottom: vh(2),
     display: "flex",
-    backgroundColor: COLORS.baseWhite,
     borderRadius: 40,
   },
   MainImageContainer: {

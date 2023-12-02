@@ -14,7 +14,7 @@ const Header = () => {
   return (
     // Whole Container
     <View style={styles.HeaderContainer}>
-      <StatusBar style="auto" />
+      <StatusBar style='dark' />
       <View style={styles.HeaderTemplate}>
         <Text style={styles.OriginalText}>
           Kajri App
@@ -26,7 +26,7 @@ const Header = () => {
           style={styles.SearchView}
         >
           <Image
-            source={icons.wsearch}
+            source={icons.loupe}
             style={styles.resizeImage}
           />
         </TouchableOpacity>
@@ -37,10 +37,11 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   OriginalText: {
-    ...COMMONTEXT.fifth,
     paddingLeft:vw(5),
     paddingTop:vh(0.5),
     color:TEXTCOLOR.secondary,
+    fontFamily:'Brusher',
+    fontSize:40,
   },
   resizeImage: {
     width: 35,
@@ -54,9 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   SearchView:{
-    backgroundColor:COLORS.motoblue,
     padding:8,
-    borderRadius:50,
   }
 });
 

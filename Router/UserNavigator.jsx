@@ -2,6 +2,9 @@ import React from "react";
 import CryptoWallet from "../components/user/CryptoWallet";
 import { createStackNavigator } from "@react-navigation/stack";
 import { MemoizedUserProvider } from "../screens";
+import { enableScreens } from 'react-native-screens';
+
+enableScreens(true);
 
 const Stack = createStackNavigator();
 

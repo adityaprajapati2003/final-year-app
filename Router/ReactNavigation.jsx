@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {Search,Cart,Menu} from "../screens";
+import {Search,Cart} from "../screens";
 import {icons} from "../constants";
 import { Image, View, StyleSheet ,Text} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -7,6 +7,9 @@ import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-nat
 import HomeNavigator from "./HomeNavigator";
 import UserNavigator from "./UserNavigator";
 import React from "react";
+import { enableScreens } from 'react-native-screens';
+
+enableScreens(true);
 
 const Tab=createBottomTabNavigator();
 
@@ -43,14 +46,6 @@ const ReactNavigation = () => {
                     tabBarIcon:({focused})=>(
                         <View style={focused ? styles.ComponentView: styles.MainStack.ComponentView}>
                             <Image source={focused ? icons.wcart: icons.cart} resizeMode="contain" style={focused ? styles.ComponentView.forImage: styles.MainStack.ComponentView.forImage}/>
-                        </View>
-                    )
-                }}/>
-                <Tab.Screen name="menu" component={Menu}
-                options={{
-                    tabBarIcon:({focused})=>(
-                        <View style={focused ? styles.ComponentView: styles.MainStack.ComponentView}>
-                            <Image source={focused ? icons.wmenu: icons.menu} resizeMode="contain" style={focused ? styles.ComponentView.forImage: styles.MainStack.ComponentView.forImage}/>
                         </View>
                     )
                 }}/>

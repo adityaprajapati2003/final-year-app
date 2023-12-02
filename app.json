@@ -4,12 +4,11 @@
     "slug": "kajri-application",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/k.png",
+    "icon": "./assets/images/kajri.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/icons/k.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/kajri.png",
+      "resizeMode": "cover"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,13 +18,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/k.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/kajri.png"
       },
       "package": "com.anonymous.kajriapplication"
     },
     "web": {
-      "favicon": "./assets/icons/k.png"
+      "favicon": "./assets/images/kajri.png"
     },
     "extra": {
       "eas": {

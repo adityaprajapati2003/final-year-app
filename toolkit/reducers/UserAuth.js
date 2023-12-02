@@ -51,8 +51,7 @@ const UserAuth = createSlice({
     },
     page:(state,action)=>{
       state.page = action.payload.page;
-    }
-    
+    },
   },
 });
 

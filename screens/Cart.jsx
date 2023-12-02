@@ -3,16 +3,17 @@ import { ScrollView, StyleSheet, Text, View ,Image, TouchableOpacity} from 'reac
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen";
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { COLORS, TEXTCOLOR, image } from '../constants';
+import { COLORS, TEXTCOLOR, icons, image } from '../constants';
 import { COMMONTEXT } from '../constants';
 import { useSelector } from 'react-redux';
 import { urlFor } from '../sanity';
 import * as Crypto from 'expo-crypto';
 import { Checkbox } from 'native-base';
 import RazorpayCheckout from 'react-native-razorpay';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { firestore } from '../authentication/firebase/firebase';
 
 const Cart = () => {
-
   // navigate to home page
   const navigate = useNavigation();
 
@@ -39,24 +40,47 @@ const Cart = () => {
   const email = useSelector((state)=>state.user.email);
 
   // handle payment 
+  const handlePaymentSuccess = async(data)=>{
+    const getEmail = useSelector((state)=>state.user.email);
+    const newPaymentData = {
+      paymentId:data.razorpay_payment_id,
+      amount:data.amount,
+      product:data.product,
+      quantity:data.quantity,
+    }
+    try{
+      await addDoc(doc(collection(firestore,'user_payment_data'),getEmail),{
+        newPaymentData
+      })
+      console.log('Payment data added to Firestore for user:', userEmail);
+    }catch(e){
+      console.error('Error adding payment data to Firestore:', error);
+    }
+  }
+
   const handlePayment =()=>{
     const options ={
       key: 'rzp_test_agN5mjpFgt4knN',
-      amount:10, // Amount in paisa
+      amount:Math.round(TOTAL_AMOUNT*100), // Amount in paisa
       name: 'Kajri NFT marketPlace',
-      description:'aditya',
-      image: '', // optional
+      description:'Kajri App encrypted payments razorpay',
+      image: icons.k, // optional
       prefill: {
-        email: 'adityakachannel@gmail.com',
+        email: email,
         contact: '9321889742',
-        name: 'User1',
+        name: email,
       },
       theme: { color: '#00658d' },
+      notes:{
+        product:object.name,
+        quantity:1,
+      }
     }
     RazorpayCheckout.open(options)
       .then((data) => {
         // handle success
         console.log(`Payment success: ${data.razorpay_payment_id}`);
+        handlePaymentSuccess(data);
         navigate.navigate('MainHome');
 
       })
@@ -68,7 +92,7 @@ const Cart = () => {
 
   return (
     <SafeAreaView>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{padding:vw(5),paddingBottom:vh(10)}}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{padding:vw(5),paddingBottom:vh(10)}} >
         {
           !object ? 
             <View className='mt-40'>

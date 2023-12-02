@@ -5,12 +5,15 @@ import Header from "../components/home/Header";
 import ColumnViewHome from "../components/home/ColumnViewHome";
 import RowViewHome from "../components/home/RowViewHome";
 import Client from "../sanity";
-import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen";
+import {
+  widthPercentageToDP as vw,
+  heightPercentageToDP as vh,
+} from "react-native-responsive-screen";
 
 const HomeScreen = () => {
   const [data, setData] = useState([]);
   
-  const getData =async()=>{
+  const getData = async()=>{
     await Client.fetch(`*[ _type == "saree" ]`).then((res) => {
       setData(res);
     });
@@ -19,10 +22,10 @@ const HomeScreen = () => {
 
   const ArrayReducer = data.slice(4, 12);
   const RowArrayReducer = data.slice(0, 5);
-
+  
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingBottom:vh(5)}}>
         <Header/>
         <RowViewHome Data={RowArrayReducer} />
         <ColumnViewHome Data={ArrayReducer} />

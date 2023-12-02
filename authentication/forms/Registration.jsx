@@ -6,8 +6,10 @@ import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-nat
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase/firebase'
 import { COLORS, COMMONTEXT, TEXTCOLOR } from '../../constants'
+import { useNavigation } from '@react-navigation/native'
 
 const Registration = () => {
+    const navigateMe = useNavigation();
 
     //Handing Signup event
     const  handleSignUp = async (values) =>{
@@ -15,6 +17,7 @@ const Registration = () => {
             const {email,password} = values;
             console.log(email,password);
             await createUserWithEmailAndPassword(auth,email,password);
+            navigateMe.navigate('signin');
         }catch(e){
             console.log(e);
         }    

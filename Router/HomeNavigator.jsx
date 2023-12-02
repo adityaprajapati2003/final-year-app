@@ -2,6 +2,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import { HomeScreen } from "../screens";
 import ItemScreen from "../components/home/ItemScreen";
+import { enableScreens } from 'react-native-screens';
+
+enableScreens(true);
 
 const Stack = createNativeStackNavigator();
 

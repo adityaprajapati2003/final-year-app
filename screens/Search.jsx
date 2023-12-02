@@ -26,7 +26,11 @@ const Search = () => {
 
   const handleOnClickSearchIt = async (query) =>{
     setLoading(true);
-    let searchItem = query;
+    if(query == ""){
+      alert('field is empty');
+      setLoading(false);
+    }else{
+      let searchItem = query;
     console.log(searchItem);
     const queryBySearchText = `*[_type == 'saree' && (name match '${searchItem}' || description match '${searchItem}' || manu match '${searchItem}')]`;
     await Client.fetch(queryBySearchText).then((res)=>{
@@ -38,6 +42,7 @@ const Search = () => {
         setLoading(false);
       }
     })
+    }
   }
 
   const [activeBtn1, setActiveBtn1] = useState(false);

@@ -3,6 +3,9 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import { NavigationContainer } from '@react-navigation/native';
 import Signin from '../authentication/Signin.jsx';
 import Signup from '../authentication/Signup.jsx';
+import { enableScreens } from 'react-native-screens';
+
+enableScreens(true);
 
 const Stack = createNativeStackNavigator();
 

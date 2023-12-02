@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
+import { RefreshControl } from "react-native-gesture-handler";
 import React, { useState, useEffect, memo } from "react";
 import { COLORS, icons, COMMONTEXT, TEXTCOLOR } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,12 +20,29 @@ import { collection, doc, getDoc } from "firebase/firestore";
 import { firestore } from "../authentication/firebase/firebase";
 import { address, userimage, contact,logout } from "../toolkit/reducers/UserAuth";
 import Model from "react-native-modal";
-import { SimpleAnimation } from "react-native-simple-animations";
 import ImageForm from "../components/user/ImageForm";
 import MemoizedProfileForm from "../components/user/ProfileForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UserProvider = () => {
+
+  // function to retrieve user data based on email
+  const getUserEmail = useSelector((state) => state.user.email);
+
+  // pull refresh option
+  const [refresh,setRefresh] = useState(false);
+  const onRefresh = React.useCallback(async ()=>{
+    setRefresh(true);
+    const fetch_image = await getDoc(doc(collection(firestore, "users_collections"), getUserEmail));
+    dispatch_values(userimage({ image: fetch_image.data().uri }));
+    setUser_data({
+      image: fetch_image.data().uri,
+    })
+    setTimeout(()=>{
+      setRefresh(false);
+    },2000);
+  },[]);
+  
 
   //View Bottom sheet
   const [isVisible, setAsVisible] = useState(false);
@@ -49,8 +67,6 @@ const UserProvider = () => {
     email: "",
   });
 
-  // function to retrieve user data based on email
-  const getUserEmail = useSelector((state) => state.user.email);
 
   const dispatch_values = useDispatch();
 
@@ -126,12 +142,13 @@ const UserProvider = () => {
 
   return (
     <KeyboardAvoidingView>
-      <SafeAreaView style={{ minHeight: vh(105), maxHeight: "auto" }}>
+      <SafeAreaView style={{ minHeight: vh(105), maxHeight: "auto" }} >
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             paddingBottom: vh(10),
           }}
+          refreshControl={<RefreshControl refreshing={refresh} onRefresh={onRefresh}/> }
         >
           {/* upload image here */}
           <View>
@@ -265,16 +282,11 @@ const UserProvider = () => {
             onBackdropPress={() => setAsVisible(!isVisible)}
             style={styles.popup}
             propagateSwipe
-            animationIn={'slideInLeft'}
-            animationInTiming={500}
-            animationOutTiming={200}
           >
-            <SimpleAnimation delay={500} duration={1000} fade staticType="zoom">
               <ScrollView showsVerticalScrollIndicator={false}>
                   <ImageForm/>
                   <MemoizedProfileForm/>
               </ScrollView>
-            </SimpleAnimation>
           </Model>
 
         </ScrollView>

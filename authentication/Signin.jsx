@@ -17,7 +17,6 @@ const Signin = () => {
           <SafeAreaView style={styles.MainContainer}>
             <SimpleAnimation delay={500} duration={1000} fade staticType='zoom'>
               {/* Login Page imported */}
-              <Image source={image.amazed} style={styles.image}/>
               <Login/>
               <View>
                 <TouchableOpacity onPress={()=>takeMeTo.navigate('signup')}>
@@ -45,11 +44,6 @@ const styles = StyleSheet.create({
     minHeight:vh(4),
     alignSelf:'center',
   },
-  image:{
-    width:300,
-    height:300,
-    alignSelf:'center',
-  }
 });
 
 export default Signin;
