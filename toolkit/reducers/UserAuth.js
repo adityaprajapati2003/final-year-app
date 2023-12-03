@@ -17,6 +17,11 @@ const UserAuth = createSlice({
     owned:"",
     image:"",
     page:null,
+    image_uri:'',
+    product_name:'',
+    owner_name:'',
+    amount:null,
+    crypto_price:null,
   },
   reducers: {
     login: (state, action) => {
@@ -52,8 +57,15 @@ const UserAuth = createSlice({
     page:(state,action)=>{
       state.page = action.payload.page;
     },
+    cart:(state,action)=>{
+      state.image_uri = action.payload.image_uri;
+      state.product_name = action.payload.product_name;
+      state.owner_name= action.payload.owner_name;
+      state.amount = action.payload.amount;
+      state.crypto_price = action.payload.crypto_price;
+    }
   },
 });
 
-export const { login, logout, address, contact, counter, userimage,page} = UserAuth.actions;
+export const { login, logout, address, contact, counter, userimage,page,cart} = UserAuth.actions;
 export default UserAuth.reducer;

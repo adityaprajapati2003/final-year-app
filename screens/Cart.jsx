@@ -2,25 +2,32 @@ import React, { useState } from 'react'
 import { ScrollView, StyleSheet, Text, View ,Image, TouchableOpacity} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen";
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { COLORS, TEXTCOLOR, icons, image } from '../constants';
 import { COMMONTEXT } from '../constants';
-import { useSelector } from 'react-redux';
-import { urlFor } from '../sanity';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Crypto from 'expo-crypto';
-import { Checkbox } from 'native-base';
 import RazorpayCheckout from 'react-native-razorpay';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection, doc } from 'firebase/firestore';
 import { firestore } from '../authentication/firebase/firebase';
+import { cart } from '../toolkit/reducers/UserAuth';
 
 const Cart = () => {
   // navigate to home page
   const navigate = useNavigation();
 
-  // Importing params from Itemscreen page
-  const {params} = useRoute();
-  let object = params;
+  // dispatcher 
+  const dispatch = useDispatch();
 
+  // fetch Cart values from redux
+  const got_image = useSelector((state)=>state.user.image_uri);
+  const got_name = useSelector((state)=>state.user.product_name);
+  const got_owner = useSelector((state)=>state.user.owner_name);
+  const got_amount = useSelector((state)=>state.user.amount);
+  const got_crypto = useSelector((state)=>state.user.crypto_price);
+
+  console.log(got_image);
+  
   // fetch page state
   const activepage = useSelector((state)=>state.user.page);
   console.log(activepage);
@@ -28,8 +35,8 @@ const Cart = () => {
   // state for payment + calculate gst also
   const GST = 18;
 
-  if(object){
-      let amount = parseInt(object.cost);
+  if(got_amount){
+      let amount = parseInt(got_amount);
       var GSTAMOUNT = amount * GST / 100;
       var TOTAL_AMOUNT = amount + GSTAMOUNT;
   }
@@ -72,7 +79,7 @@ const Cart = () => {
       },
       theme: { color: '#00658d' },
       notes:{
-        product:object.name,
+        product:got_name,
         quantity:1,
       }
     }
@@ -89,12 +96,29 @@ const Cart = () => {
         console.log(`Error: ${error.description} | ${error.code}`);
       });
   }
+  
+  // synced button events
+  const handleBuyCartGoHome =()=>{
+    alert('Product will be deliverd to you soon 😊');
+    setTimeout(()=>{
+      navigate.navigate('Home');
+      dispatch(cart({image_uri:'',product_name:'',owner_name:'',amount:null,crypto_price:null}))
+    },2000)
+  }
+
+  const handleOwnItCartGoHome =()=>{
+    alert('The bid is being placed 🫡');
+    setTimeout(()=>{
+      navigate.navigate('Home');
+      dispatch(cart({image_uri:'',product_name:'',owner_name:'',amount:null,crypto_price:null}))
+    },1000)
+  }
 
   return (
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{padding:vw(5),paddingBottom:vh(10)}} >
         {
-          !object ? 
+          !got_image ? 
             <View className='mt-40'>
               <Image source={image.searchAstro} style={{width:300,height:300,borderRadius:150,alignSelf:'center'}}/>
               <Text style={[styles.text,{textAlign:'center'}]}>Cart is empty !!</Text>
@@ -106,15 +130,15 @@ const Cart = () => {
                   <View>
 
                     <View className='flex flex-row shadow-xl shadow-black' style={styles.box1}>
-                      <Image source={{uri:urlFor(object.image).url()}} style={{width:vw(35),height:vh(20),borderRadius:25}}/>
+                      <Image source={{uri:got_image}} style={{width:vw(35),height:vh(20),borderRadius:25}}/>
                       <View style={styles.Minibox}>
-                        <Text style={[styles.header,{marginBottom:vh(1)}]}>{object.name}</Text>
-                        <Text style={styles.text}>Owned by: {object.manu}.</Text>
+                        <Text style={[styles.header,{marginBottom:vh(1)}]}>{got_name}</Text>
+                        <Text style={styles.text}>Owned by: {got_owner}.</Text>
                       </View>
                     </View>
 
                     <View className='mt-5 shadow-xl shadow-black' style={styles.box1} >
-                      <Text style={[styles.text,{textAlign:'center'}]}>Product Price : {object.cost}</Text>
+                      <Text style={[styles.text,{textAlign:'center'}]}>Product Price : {got_amount}</Text>
                       <Text style={[styles.text,{textAlign:'center'}]}>GST Applied {GST}% : {GSTAMOUNT} </Text>
                       <Text style={[styles.text,{textAlign:'center',color:TEXTCOLOR.secondary}]}>Free Shipping</Text>
                       
@@ -129,10 +153,9 @@ const Cart = () => {
                     <View className='mt-5 shadow-xl shadow-black' style={styles.box1}>
                       <Text style={[styles.text,{textAlign:'center'}]}>Cash on Delivery</Text>
 
-                      <TouchableOpacity>
-                        <Checkbox colorScheme={'amber'}>
-                          <Text style={[styles.text,{color:TEXTCOLOR.secondary,width:vw(75)}]}>Post to this Address: {user_address}</Text>
-                        </Checkbox>
+                      <TouchableOpacity className='flex flex-row mt-2' onPress={handleBuyCartGoHome}>
+                          <Image source={icons.cod} style={{width:50,height:50, margin:5}} />
+                          <Text style={[styles.text,{color:TEXTCOLOR.secondary,width:vw(75),marginTop:5}]}>Post to this Address: {user_address}</Text>
                       </TouchableOpacity>
                     </View>
 
@@ -141,17 +164,17 @@ const Cart = () => {
                   // Own it as NFT
                   <View>
                     <View className='mt-5 p-5 shadow-xl shadow-black' style={styles.box1}>
-                      <Image source={{uri:urlFor(object.image).url()}} style={{width:vw(80),height:vh(50),borderRadius:15,alignSelf:'center'}}/>
-                      <Text style={[styles.header,{margin:vw(2)}]}>{object.name}</Text>
-                      <Text style={[styles.text,{marginLeft:vw(2)}]}>Owned by: {object.manu}.</Text>
+                      <Image source={{uri:got_image}} style={{width:vw(80),height:vh(50),borderRadius:15,alignSelf:'center'}}/>
+                      <Text style={[styles.header,{margin:vw(2)}]}>{got_name}</Text>
+                      <Text style={[styles.text,{marginLeft:vw(2)}]}>Owned by: {got_owner}.</Text>
                       <Text style={[styles.text,{marginLeft:vw(2),marginTop:(1)}]}>Token id : {uuid}</Text>
                     </View>
 
                     <View className='flex flex-row mt-5 p-5 justify-between shadow-xl shadow-black' style={styles.box1}>
                       <Text style={{...COMMONTEXT.fourth,color:TEXTCOLOR.secondary}}>Place the Bid</Text>
 
-                      <TouchableOpacity style={styles.PayBtn} className='p-4 mt-2 mb-2 shadow-xl shadow-black'>
-                        <Text style={{...COMMONTEXT.fourth,color:TEXTCOLOR.primary,textAlign:'center'}}>{object.nft} ETH</Text>
+                      <TouchableOpacity style={styles.PayBtn} className='p-4 mt-2 mb-2 shadow-xl shadow-black' onPress={handleOwnItCartGoHome}>
+                        <Text style={{...COMMONTEXT.fourth,color:TEXTCOLOR.primary,textAlign:'center'}}>{got_crypto} ETH</Text>
                       </TouchableOpacity>
                     </View>
                   </View>

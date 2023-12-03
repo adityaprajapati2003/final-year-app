@@ -9,7 +9,7 @@ import { COLORS, COMMONTEXT, TEXTCOLOR, icons, image } from '../../constants';
 import AttributeHolders from './AttributeHolders';
 import { SimpleAnimation } from "react-native-simple-animations";
 import * as Crypto from 'expo-crypto';
-import { page } from '../../toolkit/reducers/UserAuth';
+import { cart, page } from '../../toolkit/reducers/UserAuth';
 
 const ItemScreen = () => {
     // Load all parameters shows loading 
@@ -26,13 +26,22 @@ const ItemScreen = () => {
 
     // Storing the data in redux
     const dispatch = useDispatch();
+    let IMAGE_URL = urlFor(product.image).url();
+
     const buyBtn = () => {
         dispatch(page({ page: 'buy' }));
-        NavigateMe.navigate('cart', { ...product });
+        if(IMAGE_URL){
+            dispatch(cart({image_uri:IMAGE_URL,product_name:product.name,owner_name:product.manu,amount:product.cost,crypto_price:product.nft}))
+        }
+        NavigateMe.navigate('cart');
     }
+    
     const ownBtn = () => {
         dispatch(page({ page: 'own' }));
-        NavigateMe.navigate('cart', { ...product });
+        if(IMAGE_URL){
+            dispatch(cart({image_uri:IMAGE_URL,product_name:product.name,owner_name:product.manu,amount:product.cost,crypto_price:product.nft}))
+        }
+        NavigateMe.navigate('cart');
     }
 
     // Handle local linking events
