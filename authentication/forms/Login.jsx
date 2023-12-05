@@ -41,7 +41,7 @@ const Login = () => {
 
       
     }catch(e){
-      console.log("new", e);
+      alert(e);
     }
   };
 

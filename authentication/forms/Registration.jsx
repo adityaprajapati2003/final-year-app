@@ -19,7 +19,7 @@ const Registration = () => {
             await createUserWithEmailAndPassword(auth,email,password);
             navigateMe.navigate('signin');
         }catch(e){
-            console.log(e);
+            alert(e);
         }    
     }
    

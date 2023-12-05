@@ -14,10 +14,10 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import Registration from "./forms/Registration";
 import { COMMONTEXT, TEXTCOLOR } from "../constants";
-import { SimpleAnimation } from "react-native-simple-animations";
 import { StatusBar } from "expo-status-bar";
 
 const Signup = () => {
+  
   const takeMeTo = useNavigation();
 
   return (
@@ -25,7 +25,7 @@ const Signup = () => {
       {/* this help to avoid Keyboard errors */}
       <SafeAreaView style={styles.MainContainer}>
         <StatusBar style='dark'/>
-        <SimpleAnimation delay={500} duration={2000} fade staticType='bounce'>
+       
           <Text style={styles.hello}>Hey !! Newors</Text>
           {/* Registration page is imported */}
           <Registration />
@@ -34,7 +34,7 @@ const Signup = () => {
               <Text style={styles.TextNav}>Already have account ? Login</Text>
             </TouchableOpacity>
           </View>
-        </SimpleAnimation>
+        
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

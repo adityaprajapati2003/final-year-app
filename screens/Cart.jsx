@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View ,Image, TouchableOpacity} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen";
@@ -8,7 +8,7 @@ import { COMMONTEXT } from '../constants';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Crypto from 'expo-crypto';
 import RazorpayCheckout from 'react-native-razorpay';
-import { addDoc, collection, doc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
 import { firestore } from '../authentication/firebase/firebase';
 import { cart } from '../toolkit/reducers/UserAuth';
 
@@ -19,6 +19,8 @@ const Cart = () => {
   // dispatcher 
   const dispatch = useDispatch();
 
+  const email = useSelector((state)=>state.user.email);
+
   // fetch Cart values from redux
   const got_image = useSelector((state)=>state.user.image_uri);
   const got_name = useSelector((state)=>state.user.product_name);
@@ -26,11 +28,39 @@ const Cart = () => {
   const got_amount = useSelector((state)=>state.user.amount);
   const got_crypto = useSelector((state)=>state.user.crypto_price);
 
-  console.log(got_image);
-  
+  const [location,setLocation] = useState({
+    street_address: "",
+    apartment: "",
+    city: "",
+    state: "",
+    zipcode: "",
+  });
+
+  useEffect(()=>{
+    const getAddress = async()=>{
+      try{
+        let fetch_profile =  await getDoc(
+          doc(collection(firestore, "users_collections_data"), email)
+        );
+        setLocation({
+          street_address: fetch_profile.data().address.StreetAddress,
+          apartment: fetch_profile.data().address.Apartment,
+          city: fetch_profile.data().address.City,
+          state: fetch_profile.data().address.State,
+          zipcode: fetch_profile.data().address.ZipCode,
+        })
+        
+       console.log('New');
+      }catch(e){
+        console.log("error while fetching",e);
+      }
+    }
+    getAddress();
+  },[]);
+  console.log(location.street_address)
+
   // fetch page state
   const activepage = useSelector((state)=>state.user.page);
-  console.log(activepage);
   
   // state for payment + calculate gst also
   const GST = 18;
@@ -41,10 +71,6 @@ const Cart = () => {
       var TOTAL_AMOUNT = amount + GSTAMOUNT;
   }
   const uuid = Crypto.randomUUID();
-
-  // fetch user address
-  const user_address = useSelector((state)=>state.user.street_address);
-  const email = useSelector((state)=>state.user.email);
 
   // handle payment 
   const handlePaymentSuccess = async(data)=>{
@@ -155,7 +181,7 @@ const Cart = () => {
 
                       <TouchableOpacity className='flex flex-row mt-2' onPress={handleBuyCartGoHome}>
                           <Image source={icons.cod} style={{width:50,height:50, margin:5}} />
-                          <Text style={[styles.text,{color:TEXTCOLOR.secondary,width:vw(75),marginTop:5}]}>Post to this Address: {user_address}</Text>
+                          <Text style={[styles.text,{color:TEXTCOLOR.secondary,width:vw(75),marginTop:5}]}>Post to this Address: {location.street_address}</Text>
                       </TouchableOpacity>
                     </View>
 

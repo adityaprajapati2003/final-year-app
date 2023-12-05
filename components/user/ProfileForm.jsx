@@ -10,21 +10,23 @@ import {
   collection,
   doc,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
-import {auth, firestore} from "../../authentication/firebase/firebase";
-import { fetchSignInMethodsForEmail } from "firebase/auth";
+import { firestore} from "../../authentication/firebase/firebase";
 import { COLORS, TEXTCOLOR, icons } from "../../constants";
 import { COMMONTEXT } from "../../constants";
 
 const ProfileForm = () => {
+
+  const getUserEmail = useSelector((state) => state.user.email);
   
   // user Details
   const [address, setAddress] = useState({
-    StreetAddress: useSelector((state)=>state.user.street_address),
+    StreetAddress: useSelector((state)=>state.user.street_address) ,
     Apartment: useSelector((state)=>state.user.apartment),
-    City: useSelector((state)=>state.user.city),
-    State: useSelector((state)=>state.user.state),
-    ZipCode: useSelector((state)=>state.user.zipcode),
+    City: useSelector((state)=>state.user.city) ,
+    State: useSelector((state)=>state.user.State) ,
+    ZipCode: useSelector((state)=>state.user.zipcode) ,
   });
 
   const [contact, setContact] = useState({
@@ -44,26 +46,27 @@ const ProfileForm = () => {
     })
   }
 
-  const getUserEmail = useSelector((state) => state.user.email);
-
   const saveProfileRecords = async(address,contact,email)=>{
-    try{
-      let docs = await setDoc(doc(collection(firestore,"users_collections_data"),email),{
-        address,
-        contact,
-      });
-      console.log("good going keep going");
-    }catch(e){
-      console.log("Not fine bro",e);
+    if(address.StreetAddress || contact.MobileNo){
+      try{
+        await updateDoc(doc(collection(firestore,'users_collections_data'),email),{
+          address,contact,
+        });
+      }catch(e){
+        console.log('Profileform error while updating',e);
+      }
+
+    }else{
+      try{
+        await setDoc(doc(collection(firestore,'users_collections_data'),email),{
+          address,contact
+        });
+      }catch(e){
+        console.log('Profileform error while setting',e);
+      }
     }
   }
 
-  const checkUserAndSetProfileData = async(email) => {
-    const getUserByEmail = await fetchSignInMethodsForEmail(auth,email);
-    if(getUserByEmail){
-      await saveProfileRecords(address,contact,getUserEmail);
-    }
-  }
   return (
     <View className="p-5">
       <View className='flex flex-row justify-between pb-5'>
@@ -107,15 +110,14 @@ const ProfileForm = () => {
           onChangeText={(text) => setContact({ ...contact, MobileNo: text })}
         />
       </View>
-      <TouchableOpacity style={styles.savebtn} className="shadow-xl shadow-black" onPress={()=>checkUserAndSetProfileData(getUserEmail)}>
+      <TouchableOpacity style={styles.savebtn} className="shadow-xl shadow-black" onLongPress={saveProfileRecords(address,contact,getUserEmail)}>
           <Text style={styles.text}>Save Profile</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-const MemoizedProfileForm = React.memo(ProfileForm);
-export default MemoizedProfileForm;
+export default ProfileForm;
 
 
 const styles = StyleSheet.create({

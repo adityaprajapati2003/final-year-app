@@ -21,38 +21,14 @@ import { firestore } from "../authentication/firebase/firebase";
 import { address, userimage, contact,logout } from "../toolkit/reducers/UserAuth";
 import Model from "react-native-modal";
 import ImageForm from "../components/user/ImageForm";
-import MemoizedProfileForm from "../components/user/ProfileForm";
+import ProfileForm from "../components/user/ProfileForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UserProvider = () => {
 
-  // function to retrieve user data based on email
-  const getUserEmail = useSelector((state) => state.user.email);
-
-  // pull refresh option
-  const [refresh,setRefresh] = useState(false);
-  const onRefresh = React.useCallback(async ()=>{
-    setRefresh(true);
-    const fetch_image = await getDoc(doc(collection(firestore, "users_collections"), getUserEmail));
-    dispatch_values(userimage({ image: fetch_image.data().uri }));
-    setUser_data({
-      image: fetch_image.data().uri,
-    })
-    setTimeout(()=>{
-      setRefresh(false);
-    },2000);
-  },[]);
-  
-
   //View Bottom sheet
   const [isVisible, setAsVisible] = useState(false);
 
-  // logout 
-  const handleLogout = async()=>{
-    await AsyncStorage.removeItem('user');
-    dispatch_values(logout());
-  }
-  
   const [user_data, setUser_data] = useState({
     image: null,
     street_address: "",
@@ -67,8 +43,64 @@ const UserProvider = () => {
     email: "",
   });
 
-
   const dispatch_values = useDispatch();
+
+  // function to retrieve user data based on email
+  const getUserEmail = useSelector((state) => state.user.email);
+
+  // pull refresh option
+  const [refresh,setRefresh] = useState(false);
+
+   // user status
+   const [isDown, setAsDown] = useState(true);
+
+   // user info
+   const [isUp, setAsUp] = useState(true);
+ 
+
+  const onRefresh = React.useCallback(async ()=>{
+
+    setRefresh(true);
+    const fetch_image = await getDoc(doc(collection(firestore, "users_collections"), getUserEmail));
+    const fetch_profile = await getDoc(doc(collection(firestore, "users_collections_data"), getUserEmail));
+
+    dispatch_values(userimage({ image: fetch_image.data().uri }));
+    dispatch_values(
+      address({
+        street_address: fetch_profile.data().address.StreetAddress,
+        apartment: fetch_profile.data().address.Apartment,
+        city: fetch_profile.data().address.City,
+        State: fetch_profile.data().address.State,
+        zipcode: fetch_profile.data().address.ZipCode,
+      })
+    );
+    dispatch_values(
+      contact({
+        mobileno: fetch_profile.data().contact.MobileNo,
+      })
+    );
+
+    setUser_data({
+      image: fetch_image.data().uri,
+      street_address: fetch_profile.data().address.StreetAddress,
+      apartment: fetch_profile.data().address.Apartment,
+      city: fetch_profile.data().address.City,
+      state: fetch_profile.data().address.State,
+      zipcode: fetch_profile.data().address.ZipCode,
+      mobileno: fetch_profile.data().contact.MobileNo,
+    })
+
+    setTimeout(()=>{
+      setRefresh(false);
+    },2000);
+
+  },[]);
+  
+  // logout 
+  const handleLogout = async()=>{
+    await AsyncStorage.removeItem('user');
+    dispatch_values(logout());
+  }
 
   useEffect(() => {
     const FetchUserInfo = async (email) => {
@@ -89,7 +121,7 @@ const UserProvider = () => {
         }
         {
           fetch_profile
-            ? console.log("Values is fetched")
+            ? console.log("Profile is fetched")
             : console.log("Values not fetched");
         }
 
@@ -108,8 +140,7 @@ const UserProvider = () => {
 
           dispatch_values(
             contact({
-              mobileno: fetch_profile.data().contact.MoblieNo,
-              email: email,
+              mobileno: fetch_profile.data().contact.MobileNo,
             })
           );
 
@@ -120,7 +151,7 @@ const UserProvider = () => {
             city: fetch_profile.data().address.City,
             state: fetch_profile.data().address.State,
             zipcode: fetch_profile.data().address.ZipCode,
-            mobileno: fetch_profile.data().contact.MoblieNo,
+            mobileno: fetch_profile.data().contact.MobileNo,
             email: email,
             thrifts: 0,
             orders: 0,
@@ -133,12 +164,6 @@ const UserProvider = () => {
     };
     FetchUserInfo(getUserEmail);
   }, [getUserEmail, dispatch_values]);
-
-  // user status
-  const [isDown, setAsDown] = useState(true);
-
-  // user info
-  const [isUp, setAsUp] = useState(true);
 
   return (
     <KeyboardAvoidingView>
@@ -285,7 +310,7 @@ const UserProvider = () => {
           >
               <ScrollView showsVerticalScrollIndicator={false}>
                   <ImageForm/>
-                  <MemoizedProfileForm/>
+                  <ProfileForm/>
               </ScrollView>
           </Model>
 

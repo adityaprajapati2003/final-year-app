@@ -13,12 +13,15 @@ import {
 } from "../../authentication/firebase/firebase";
 import { useSelector } from "react-redux";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { collection, setDoc, doc } from "firebase/firestore";
+import { collection, setDoc, doc, updateDoc } from "firebase/firestore";
 import { COLORS ,COMMONTEXT, TEXTCOLOR} from "../../constants";
 
 const ImageForm = () => {
+
+  const getUserEmail = useSelector((state) => state.user.email);
+  
   const [imagefile, setImageFile] = useState(
-    useSelector((state) => state.user.image)
+    useSelector((state)=>state.user.image)
   );
 
   // Image picker function
@@ -44,19 +47,20 @@ const ImageForm = () => {
   // Storing the image in firestore
   /*check if user exists or not*/
 
-  const getUserEmail = useSelector((state) => state.user.email);
-
-  async function saveRecord(uri, email) {
-    try {
-      let docRef = await setDoc(
-        doc(collection(firestore, "users_collections"), email),
-        {
+  const saveRecord = async (uri,email)=>{
+    if(imagefile){
+      try{
+        await updateDoc(doc(collection(firestore,'users_collections'),email),{
           uri,
-        }
-      );
-      console.log("good going keep going");
-    } catch (e) {
-      console.log("Not fine bro", e);
+        })
+      }catch(e){console.log('ImageForm error while update',e)};
+
+    }else{
+      try{
+        await setDoc(doc(collection(firestore,'users_collections'),email),{
+          uri,
+        })
+      }catch(e){console.log('ImageForm error while setting',e)};
     }
   }
 

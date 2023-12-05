@@ -41,9 +41,8 @@ const UserAuth = createSlice({
       state.zipcode = zipcode;
     },
     contact: (state, action) => {
-      const { mobileno, email } = action.payload;
+      const { mobileno } = action.payload;
       state.mobileno = mobileno;
-      state.email = email;
     },
     counter: (state, action) => {
       const {orders, thrifts, owned } = action.payload;

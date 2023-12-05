@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, TouchableOpacity} from 'r
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen"
 import { useNavigation } from '@react-navigation/native'
-import { COLORS, COMMONTEXT, TEXTCOLOR, image} from '../constants'
+import { COLORS, COMMONTEXT, TEXTCOLOR} from '../constants'
 import Login from './forms/Login'
 import { SimpleAnimation } from 'react-native-simple-animations';
 import { StatusBar } from "expo-status-bar";
@@ -24,6 +24,9 @@ const Signin = () => {
                 <TouchableOpacity onPress={()=>takeMeTo.navigate('signup')}>
                   <Text style={styles.TextNav}>Create a new account ? Sign Up</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={()=>takeMeTo.navigate('reset')}>
+                  <Text style={styles.Text}>Forgot password ?</Text>
+                </TouchableOpacity>
               </View>
               </SimpleAnimation>
           </SafeAreaView>
@@ -36,7 +39,7 @@ const styles = StyleSheet.create({
     height:vh(105),
     paddingLeft:vw(10),
     paddingRight:vw(10),
-    paddingTop:vh(30),
+    paddingTop:vh(20),
     alignItems:'center',
   },
   TextNav:{
@@ -46,6 +49,13 @@ const styles = StyleSheet.create({
     minHeight:vh(4),
     alignSelf:'center',
   },
+  Text:{
+    ...COMMONTEXT.primary,
+    color:'gray',
+    marginTop:vh(1),
+    minHeight:vh(4),
+    alignSelf:'center',
+  }
 });
 
 export default Signin;
