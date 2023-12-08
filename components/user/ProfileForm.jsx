@@ -2,7 +2,7 @@ import {
   widthPercentageToDP as vw,
   heightPercentageToDP as vh,
 } from "react-native-responsive-screen";
-import { StyleSheet, Text, View ,TouchableOpacity,Image} from "react-native";
+import { StyleSheet, Text, View ,TouchableOpacity,Image, Alert} from "react-native";
 import React, { useState } from "react";
 import TextField from "../cart/TextField";
 import { useSelector } from "react-redux";
@@ -67,6 +67,19 @@ const ProfileForm = () => {
     }
   }
 
+  const additionCheckForProfileSave = () => {
+    Alert.alert(
+      'Confirmation',
+      'You want to save update for your profile 🫡',
+      [
+        {text:'cancel',onPress:()=>console.log('ok'),style:'cancel'},
+        {text:'OK', onPress:()=>saveProfileRecords(address,contact,getUserEmail)}
+      ],
+      { cancelable: false },
+    )
+  }
+
+  
   return (
     <View className="p-5">
       <View className='flex flex-row justify-between pb-5'>
@@ -110,7 +123,7 @@ const ProfileForm = () => {
           onChangeText={(text) => setContact({ ...contact, MobileNo: text })}
         />
       </View>
-      <TouchableOpacity style={styles.savebtn} className="shadow-xl shadow-black" onLongPress={saveProfileRecords(address,contact,getUserEmail)}>
+      <TouchableOpacity style={styles.savebtn} className="shadow-xl shadow-black" onPress={additionCheckForProfileSave}>
           <Text style={styles.text}>Save Profile</Text>
       </TouchableOpacity>
     </View>

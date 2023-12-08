@@ -295,7 +295,7 @@ const UserProvider = () => {
           </View>
 
           {/* logout btn */}
-          <TouchableOpacity className='mt-5' onLongPress={handleLogout}>
+          <TouchableOpacity className='mt-5' onPress={handleLogout}>
               <Text style={{...COMMONTEXT.semisecondary,color:TEXTCOLOR.secondary,textAlign:'center',marginBottom:10}}>Long press to Logout</Text>
               <Image source={icons.logout} style={{width:40,height:40,alignSelf:'center'}}/>
           </TouchableOpacity>

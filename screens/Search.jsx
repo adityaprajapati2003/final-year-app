@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -16,40 +16,42 @@ import {
 } from "react-native-responsive-screen";
 import Client from "../sanity";
 import RenderColumns from "../components/search/RenderColumns";
+// import RBSheet from "react-native-raw-bottom-sheet";
 
 const Search = () => {
-
-  const [loading,setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
 
   // random search queries
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  // const refRBSheet = useRef();
 
-  const handleOnClickSearchIt = async (query) =>{
+  const handleOnClickSearchIt = async (query) => {
     setLoading(true);
-    if(query == ""){
-      alert('field is empty');
+    if (query == "") {
+      alert("field is empty");
       setLoading(false);
-    }else{
+    } else {
       let searchItem = query;
-    console.log(searchItem);
-    const queryBySearchText = `*[_type == 'saree' && (name match '${searchItem}' || description match '${searchItem}' || manu match '${searchItem}')]`;
-    await Client.fetch(queryBySearchText).then((res)=>{
-      if(res.length>0){
-        setData(res);
-        setLoading(false);
-      }else{
-        setData(null);
-        setLoading(false);
-      }
-    })
+      console.log(searchItem);
+      const queryBySearchText = `*[_type == 'saree' && (name match '${searchItem}' || description match '${searchItem}' || manu match '${searchItem}')]`;
+      await Client.fetch(queryBySearchText).then((res) => {
+        if (res.length > 0) {
+          setData(res);
+          setLoading(false);
+        } else {
+          setData(null);
+          setLoading(false);
+        }
+      });
     }
-  }
+  };
 
   const [activeBtn1, setActiveBtn1] = useState(false);
   const [activeBtn2, setActiveBtn2] = useState(false);
   const [activeBtn3, setActiveBtn3] = useState(false);
   const [activeBtn4, setActiveBtn4] = useState(false);
   const [activeBtn5, setActiveBtn5] = useState(false);
+  // const [costbtn, setCostBtn] = useState(false);
 
   const [data, setData] = useState();
 
@@ -131,8 +133,24 @@ const Search = () => {
     setActiveBtn3(false);
     setActiveBtn4(false);
     setActiveBtn5(false);
-    setSearchQuery('');
+    setSearchQuery("");
   };
+
+  // states for cost buttons
+  const [activeCost1,setActiveCost1] = useState(false);
+  const [activeCost2,setActiveCost2] = useState(false);
+  const [activeCost3,setActiveCost3] = useState(false);
+  const [activeCost4,setActiveCost4] = useState(false);
+  
+  // const handleCostBasedSearchFilter = async(btnKey,query)=>{
+  //   switch(query){
+  //     case 'first':
+  //       if(query){
+  //         setLoading(true);
+          
+  //       }
+  //   }
+  // }
 
   return (
     <View style={styles.MainContainerSearch}>
@@ -147,7 +165,10 @@ const Search = () => {
               value={searchQuery}
               onChangeText={(text) => setSearchQuery(text)}
             />
-            <TouchableOpacity style={styles.iconback} onPress={()=>handleOnClickSearchIt(searchQuery)}>
+            <TouchableOpacity
+              style={styles.iconback}
+              onPress={() => handleOnClickSearchIt(searchQuery)}
+            >
               <Image source={icons.wsearch} style={styles.icon} />
             </TouchableOpacity>
           </View>
@@ -168,6 +189,7 @@ const Search = () => {
               className="flex flex-row mt-2 pb-5"
               style={{ minHeight: vh(7) }}
             >
+              {/* filter clear */}
               <TouchableOpacity
                 className="p-3 ml-4"
                 style={{ borderRadius: 30, backgroundColor: COLORS.motoblue }}
@@ -175,6 +197,7 @@ const Search = () => {
               >
                 <Image source={icons.filter} style={styles.icon} />
               </TouchableOpacity>
+              {/* All */}
               <TouchableOpacity
                 className="p-4 ml-4"
                 style={
@@ -188,6 +211,61 @@ const Search = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
+
+
+              {/* cost based search
+              <TouchableOpacity
+                className="p-4 ml-4"
+                style={costbtn ? styles.filterTainerActs : styles.filterTainer}
+                onPress={() => refRBSheet.current.open()}
+              >
+                <View>
+                  <Text style={activeBtn1 ? styles.Wtext : styles.text}>
+                    Cost Range
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <RBSheet
+                ref={refRBSheet}
+                closeOnDragDown={true}
+                closeOnPressMask={false}
+                customStyles={{
+                  wrapper: {
+                    backgroundColor: "transparent",
+                  },
+                  draggableIcon: {
+                    backgroundColor: "#000",
+                  },
+                  container:{
+                    backgroundColor:COLORS.gradientGray,
+                  }
+                }}
+              >
+                <View className='p-8 flex flex-row flex-wrap justify-around'>
+                  <TouchableOpacity onPress={()=>{}}>
+                    <View style={{borderRadius:25,backgroundColor:COLORS.baseWhite,padding:12,margin:5}} className="shadow-xl shadow-black">
+                      <Text style={styles.text}>500 - 2000</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <View style={{borderRadius:25,backgroundColor:COLORS.baseWhite,padding:12,margin:5}} className="shadow-xl shadow-black">
+                      <Text style={styles.text}>2000 - 4000</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity >
+                    <View style={{borderRadius:25,backgroundColor:COLORS.baseWhite,padding:12,margin:5}} className="shadow-xl shadow-black">
+                      <Text style={styles.text}>4000 - 6000</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <View style={{borderRadius:25,backgroundColor:COLORS.baseWhite,padding:12,margin:5}} className="shadow-xl shadow-black">
+                      <Text style={styles.text}>6000 +</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </RBSheet> */}
+
+              {/* Brands */}
               <TouchableOpacity
                 className="p-4 ml-4"
                 style={
@@ -201,6 +279,7 @@ const Search = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
+              {/* Hand made */}
               <TouchableOpacity
                 className="p-4 ml-4"
                 style={
@@ -214,6 +293,7 @@ const Search = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
+              {/* NFT */}
               <TouchableOpacity
                 className="p-4 ml-4"
                 style={
@@ -227,6 +307,7 @@ const Search = () => {
                   </Text>
                 </View>
               </TouchableOpacity>
+              {/* Thrited */}
               <TouchableOpacity
                 className="p-4 ml-4"
                 style={
@@ -245,36 +326,55 @@ const Search = () => {
         </View>
 
         {/* Rendered Data */}
-        { loading ? 
-          <View className='self-center top-24 bottom-24'>
-            <Image source={image.comet} style={{width:300,height:300}}/>
-            <Text style={{...COMMONTEXT.tertiary,color:TEXTCOLOR.secondary,alignSelf:'center'}}>Loading...</Text>
+        {loading ? (
+          <View className="self-center top-24 bottom-24">
+            <Image source={image.comet} style={{ width: 300, height: 300 }} />
+            <Text
+              style={{
+                ...COMMONTEXT.tertiary,
+                color: TEXTCOLOR.secondary,
+                alignSelf: "center",
+              }}
+            >
+              Loading...
+            </Text>
           </View>
-        :
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ marginTop: vh(1), paddingBottom: vh(16) }}
-        >
-          {data !=null ? (
-            <RenderColumns Data={data} />
-          ) : (
-            <View className="self-center top-20 bottom-20">
-              <Image source={image.searchAstro} style={styles.imageOP} />
+        ) : (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ marginTop: vh(1), paddingBottom: vh(16) }}
+          >
+            {data != null ? (
+              <RenderColumns Data={data} />
+            ) : (
+              <View className="self-center top-20 bottom-20">
+                <Image source={image.searchAstro} style={styles.imageOP} />
 
-              {data === null ? (
-                <Text style={{ ...COMMONTEXT.semisecondary ,alignSelf: "center",color:TEXTCOLOR.secondary}}>
-                  Nothing Found!!
-                </Text>
-              ) : (
-                <Text style={{ ...COMMONTEXT.semisecondary, alignSelf: "center" ,color:TEXTCOLOR.secondary}}>
-                  Looking For Some Products?
-                </Text>
-              )}
-            </View>
-          )}
-        </ScrollView>
-        }
-
+                {data === null ? (
+                  <Text
+                    style={{
+                      ...COMMONTEXT.semisecondary,
+                      alignSelf: "center",
+                      color: TEXTCOLOR.secondary,
+                    }}
+                  >
+                    Nothing Found!!
+                  </Text>
+                ) : (
+                  <Text
+                    style={{
+                      ...COMMONTEXT.semisecondary,
+                      alignSelf: "center",
+                      color: TEXTCOLOR.secondary,
+                    }}
+                  >
+                    Looking For Some Products?
+                  </Text>
+                )}
+              </View>
+            )}
+          </ScrollView>
+        )}
       </SafeAreaView>
     </View>
   );

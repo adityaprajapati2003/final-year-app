@@ -15,7 +15,7 @@ const PasswordReset = () => {
         <View style={styles.mainContainer}>
             <View>
                 <Text style={styles.hello}>Forgot Password ?</Text>
-                <Text style={styles.Text}>You will receive an mail at your email please sent your password again via clicking on link provided!</Text>
+                <Text style={styles.Text}>You will receive an mail at your email please set your password again via clicking on link provided!</Text>
             </View>
             <Forgot/>
           <TouchableOpacity onPress={()=>takeMeTo.navigate('signin')}>
