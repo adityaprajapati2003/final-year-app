@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View ,Image, TouchableOpacity} from 'react-native'
+import { ScrollView, StyleSheet, Text, View ,Image, TouchableOpacity, FlatList, Alert} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { widthPercentageToDP as vw, heightPercentageToDP as vh } from "react-native-responsive-screen";
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,8 @@ import * as Crypto from 'expo-crypto';
 import RazorpayCheckout from 'react-native-razorpay';
 import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
 import { firestore } from '../authentication/firebase/firebase';
+import { urlFor } from '../sanity';
+import { removeFromCart } from '../toolkit/reducers/CartActions';
 import { cart } from '../toolkit/reducers/UserAuth';
 
 const Cart = () => {
@@ -19,15 +21,6 @@ const Cart = () => {
   // dispatcher 
   const dispatch = useDispatch();
 
-  const email = useSelector((state)=>state.user.email);
-
-  // fetch Cart values from redux
-  const got_image = useSelector((state)=>state.user.image_uri);
-  const got_name = useSelector((state)=>state.user.product_name);
-  const got_owner = useSelector((state)=>state.user.owner_name);
-  const got_amount = useSelector((state)=>state.user.amount);
-  const got_crypto = useSelector((state)=>state.user.crypto_price);
-
   const [location,setLocation] = useState({
     street_address: "",
     apartment: "",
@@ -35,6 +28,9 @@ const Cart = () => {
     state: "",
     zipcode: "",
   });
+
+  // state for payment + calculate gst also
+  const GST = 18; 
 
   useEffect(()=>{
     const getAddress = async()=>{
@@ -48,22 +44,31 @@ const Cart = () => {
           city: fetch_profile.data().address.City,
           state: fetch_profile.data().address.State,
           zipcode: fetch_profile.data().address.ZipCode,
-        })
+        });
         
-       console.log('New');
       }catch(e){
         console.log("error while fetching",e);
       }
     }
     getAddress();
   },[]);
-  console.log(location.street_address)
 
-  // fetch page state
+  // fetch values from redux
+  const email = useSelector((state)=>state.user.email);
+  const got_image = useSelector((state)=>state.user.image_uri);
+  const got_name = useSelector((state)=>state.user.product_name);
+  const got_owner = useSelector((state)=>state.user.owner_name);
+  const got_amount = useSelector((state)=>state.user.amount);
+  const got_crypto = useSelector((state)=>state.user.crypto_price);
   const activepage = useSelector((state)=>state.user.page);
-  
-  // state for payment + calculate gst also
-  const GST = 18;
+  let cartItems = useSelector((state)=>state.cart.items);
+ 
+  const TOTAL_COST_OF_CART_ITEMS = cartItems.reduce((total,item)=>total + item.cost,0);
+  if(TOTAL_COST_OF_CART_ITEMS){
+    let _amount = parseInt(TOTAL_COST_OF_CART_ITEMS);
+    var GST_CART_AMOUNT = _amount * GST / 100;
+    var TOTAL_AMOUNT_CART = _amount + GST_CART_AMOUNT;
+  }
 
   if(got_amount){
       let amount = parseInt(got_amount);
@@ -73,7 +78,7 @@ const Cart = () => {
   const uuid = Crypto.randomUUID();
 
   // handle payment 
-  const handlePaymentSuccess = async(data)=>{
+  const handlePaymentSuccess = async(data)=> {
     const getEmail = useSelector((state)=>state.user.email);
     const newPaymentData = {
       paymentId:data.razorpay_payment_id,
@@ -140,11 +145,45 @@ const Cart = () => {
     },1000)
   }
 
+  const handleRemoveFromCart =(itemId)=>{
+    dispatch(removeFromCart(itemId));
+  }
+
   return (
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{padding:vw(5),paddingBottom:vh(10)}} >
         {
-          !got_image ? 
+          cartItems && TOTAL_COST_OF_CART_ITEMS ?
+            (
+              <View className='flex flex-col shadow-xl shadow-black mb-5 p-2' style={styles.box1}>
+                <Text style={{...COMMONTEXT.tertiary,margin:5}}>Cart Items</Text>
+                {cartItems.map((item)=>{
+                  return(
+                    <View key={item.id} style={{borderColor:COLORS.motoblue,borderWidth:1,padding:5,marginTop:10,borderRadius:25}}>
+                        <View className='flex flex-row shadow-black m-2'>
+                          <Image source={{uri:urlFor(item.image).url()}} style={{width:vw(35),height:vh(20),borderRadius:25}}/>
+                          <View style={{padding:10}}>
+
+                            <TouchableOpacity onPress={()=>handleRemoveFromCart(item.id)}>
+                              <Image source={icons.trash} style={{width:30,height:30,alignSelf:'flex-end',marginRight:15,marginBottom:10}}/>
+                            </TouchableOpacity>
+
+                            <Text style={[styles.desc,{width:vw(45)}]} >{item.description}</Text>
+                            <Text style={styles.text}>Product price :  &#8377;{item.cost}</Text>
+                          </View>
+                        </View>
+                    </View>
+                  )
+                })}
+                 <TouchableOpacity onPress={handlePayment} style={styles.PayBtn} className='p-2 pb-4 mt-5 mb-5 mr-5 shadow-xl shadow-black self-end'>
+                    <Text style={{...COMMONTEXT.fourth,color:TEXTCOLOR.primary,textAlign:'center'}}>PAY  &#8377;{TOTAL_AMOUNT_CART}</Text>
+                  </TouchableOpacity>
+              </View>
+            ) : ("")
+        }
+      <Text style={[styles.text,{margin:10}]}>Product you looked for</Text>
+        {
+          !got_image? 
             <View className='mt-40'>
               <Image source={image.searchAstro} style={{width:300,height:300,borderRadius:150,alignSelf:'center'}}/>
               <Text style={[styles.text,{textAlign:'center'}]}>Cart is empty !!</Text>

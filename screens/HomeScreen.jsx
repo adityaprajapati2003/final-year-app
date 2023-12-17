@@ -9,6 +9,7 @@ import {
   widthPercentageToDP as vw,
   heightPercentageToDP as vh,
 } from "react-native-responsive-screen";
+import { SimpleAnimation } from "react-native-simple-animations";
 
 const HomeScreen = () => {
   const [data, setData] = useState([]);
@@ -26,9 +27,13 @@ const HomeScreen = () => {
   return (
     <SafeAreaView>
       <ScrollView contentContainerStyle={{paddingBottom:vh(5)}}>
-        <Header/>
-        <RowViewHome Data={RowArrayReducer} />
-        <ColumnViewHome Data={ArrayReducer} />
+        <SimpleAnimation delay={300} duration={300} fade >
+
+          <Header/>
+          <RowViewHome Data={RowArrayReducer} />
+          <ColumnViewHome Data={ArrayReducer} />
+
+        </SimpleAnimation>
       </ScrollView>
     </SafeAreaView>
   );

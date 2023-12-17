@@ -28,8 +28,10 @@ import truck from '../assets/icons/truck.png';
 import replace from '../assets/icons/replace.png';
 import cod from '../assets/icons/cod.png';
 import legal from '../assets/icons/legal.png';
+import trash from '../assets/icons/trash.png';
 
 export default {
+    trash,
     truck,
     cod,
     replace,

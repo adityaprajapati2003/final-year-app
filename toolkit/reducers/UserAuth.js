@@ -68,3 +68,4 @@ const UserAuth = createSlice({
 
 export const { login, logout, address, contact, counter, userimage,page,cart} = UserAuth.actions;
 export default UserAuth.reducer;
+
