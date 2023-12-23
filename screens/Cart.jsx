@@ -130,7 +130,14 @@ const Cart = () => {
   
   // synced button events
   const handleBuyCartGoHome =()=>{
-    alert('Product will be deliverd to you soon 😊');
+    // alert('Product will be deliverd to you soon 😊');
+    Alert.alert(
+      '',
+      'Product will be deliverd to you soon 😊',
+      [
+        {text:'OK'}
+      ],
+    )
     setTimeout(()=>{
       navigate.navigate('Home');
       dispatch(cart({image_uri:'',product_name:'',owner_name:'',amount:null,crypto_price:null}))
@@ -138,7 +145,14 @@ const Cart = () => {
   }
 
   const handleOwnItCartGoHome =()=>{
-    alert('The bid is being placed 🫡');
+    // alert('The bid is being placed 🫡');
+    Alert.alert(
+      '',
+      'The bid is being placed 🫡',
+      [
+        {text:'OK'}
+      ],
+    )
     setTimeout(()=>{
       navigate.navigate('Home');
       dispatch(cart({image_uri:'',product_name:'',owner_name:'',amount:null,crypto_price:null}))
@@ -152,6 +166,7 @@ const Cart = () => {
   return (
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{padding:vw(5),paddingBottom:vh(10)}} >
+        <View>
         {
           cartItems && TOTAL_COST_OF_CART_ITEMS ?
             (
@@ -180,14 +195,17 @@ const Cart = () => {
                   </TouchableOpacity>
               </View>
             ) : ("")
-        }
-      <Text style={[styles.text,{margin:10}]}>Product you looked for</Text>
+          }
+        </View>
+        { activepage ? <Text style={[styles.text,{margin:10}]}>Product you looked for</Text> : ""}
         {
-          !got_image? 
-            <View className='mt-40'>
-              <Image source={image.searchAstro} style={{width:300,height:300,borderRadius:150,alignSelf:'center'}}/>
-              <Text style={[styles.text,{textAlign:'center'}]}>Cart is empty !!</Text>
-            </View>:
+          !got_image ? 
+            TOTAL_COST_OF_CART_ITEMS ? "" :  
+              <View className='mt-40'>
+                <Image source={image.searchAstro} style={{width:300,height:300,borderRadius:150,alignSelf:'center'}}/>
+                <Text style={[styles.text,{textAlign:'center'}]}>Cart is empty !!</Text>
+              </View>
+            :
             <View>
               {
                 activepage == 'buy' ?
