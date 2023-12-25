@@ -41,7 +41,7 @@ const TextField: React.FC<Props> = (props) => {
     }).start()
   }, [focusAnim, isFocused, value])
 
-  let color = isFocused ? COLORS.motoblue : 'gray'
+  let color = isFocused ? COLORS.baseWhite : COLORS.motoblue
   if (errorText) {
     color = '#B00020'
   }

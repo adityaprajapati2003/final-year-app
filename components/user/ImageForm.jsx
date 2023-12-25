@@ -93,7 +93,7 @@ const ImageForm = () => {
       <Text style={styles.header}>Profile Image</Text>
       <View className="flex flex-row justify-between">
         <View className="border-dashed border-2 border-slate-900 p-3">
-          <Text style={styles.box}>
+          <Text style={styles.box1}>
             {imagefile ? imageName(imagefile) : ".png, .jpg, .jpeg, .webp"}
           </Text>
         </View>
@@ -102,7 +102,7 @@ const ImageForm = () => {
           className="p-3 justify-center shadow-xl shadow-black"
           style={styles.upbox}
         >
-          <Text style={styles.box}>
+          <Text style={styles.box2}>
             {imagefile ? "Update Image" : "Upload Image"}
           </Text>
         </TouchableOpacity>
@@ -129,11 +129,17 @@ const styles = StyleSheet.create({
     maxHeight:vh(10),
     borderRadius:15,
   },
-  box:{
+  box1:{
+    width:vw(40),
+    ...COMMONTEXT.secondary,
+    color:'black',
+    maxHeight:vh(5),
+  },
+  box2:{
     width:vw(40),
     ...COMMONTEXT.secondary,
     color:TEXTCOLOR.primary,
     maxHeight:vh(5),
-  }
+  },
 
 });

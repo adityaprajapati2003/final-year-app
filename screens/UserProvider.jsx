@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from "react-native";
 import { RefreshControl } from "react-native-gesture-handler";
-import React, { useState, useEffect, memo } from "react";
+import React, { useCallback, useMemo, useRef ,useState,useEffect, memo} from 'react';
 import { COLORS, icons, COMMONTEXT, TEXTCOLOR } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "native-base";
@@ -23,11 +23,22 @@ import Model from "react-native-modal";
 import ImageForm from "../components/user/ImageForm";
 import ProfileForm from "../components/user/ProfileForm";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 const UserProvider = () => {
 
   //View Bottom sheet
   const [isVisible, setAsVisible] = useState(false);
+  const bottomSheetRef = useRef(null);
+  // variables
+  const snapPoints = useMemo(() => ['50%'], []);
+  // callbacks
+  const handleSheetChanges = useCallback((index) => {
+    console.log('handleSheetChanges', index);
+    if (index === -1) {
+      setAsVisible(false);
+    }
+  }, []);
 
   const [user_data, setUser_data] = useState({
     image: null,
@@ -194,7 +205,7 @@ const UserProvider = () => {
           >
             <TouchableOpacity
               style={styles.Editbtn}
-              onPress={() => setAsVisible(!isVisible)}
+              onPress={() => setAsVisible(true)}
             >
               <Image source={icons.edit} style={styles.editIcon} />
             </TouchableOpacity>
@@ -302,7 +313,8 @@ const UserProvider = () => {
 
           {/* Bottom sheets */}
 
-          <Model
+          {/* This is model very slow in performance */}
+          {/* <Model 
             isVisible={isVisible}
             onBackdropPress={() => setAsVisible(!isVisible)}
             style={styles.popup}
@@ -312,7 +324,23 @@ const UserProvider = () => {
                   <ImageForm/>
                   <ProfileForm/>
               </ScrollView>
-          </Model>
+          </Model> */} 
+
+            <BottomSheet
+              ref={bottomSheetRef}
+              index={isVisible ? 0 : -1}
+              snapPoints={['40%', '75%']}
+              onChange={handleSheetChanges}
+              enablePanDownToClose
+              backgroundStyle={{backgroundColor:COLORS.baseWhite}}
+            >
+              <BottomSheetScrollView contentContainerStyle={{
+                paddingBottom:vh(5),
+              }}>
+                <ImageForm/>
+                <ProfileForm/>
+              </BottomSheetScrollView>
+            </BottomSheet>
 
         </ScrollView>
       </SafeAreaView>
@@ -404,13 +432,6 @@ const styles = StyleSheet.create({
     marginLeft: vw(5),
     borderRadius: 25,
     backgroundColor: COLORS.gradientGray,
-  },
-  popup: {
-    marginTop: vh(20),
-    marginLeft: vw(5),
-    marginRight: vw(5),
-    backgroundColor: COLORS.gradientGray,
-    borderRadius: 30,
   },
 });
 
