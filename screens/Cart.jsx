@@ -8,11 +8,12 @@ import { COMMONTEXT } from '../constants';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Crypto from 'expo-crypto';
 import RazorpayCheckout from 'react-native-razorpay';
-import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import { firestore } from '../authentication/firebase/firebase';
 import { urlFor } from '../sanity';
 import { removeFromCart } from '../toolkit/reducers/CartActions';
 import { cart } from '../toolkit/reducers/UserAuth';
+import axios from 'axios';
 
 const Cart = () => {
   // navigate to home page
@@ -129,8 +130,20 @@ const Cart = () => {
   }
   
   // synced button events
-  const handleBuyCartGoHome =()=>{
+  const handleBuyCartGoHome = async ()=>{
     // alert('Product will be deliverd to you soon 😊');
+    try{
+      await setDoc(doc(collection(firestore,'order_by_users'),email),{
+          TOTAL_AMOUNT,
+          got_image,
+          got_owner,
+      });
+      
+      console.log("Processes completed");
+
+    }catch(e){
+      throw new Error(e);
+    }
     Alert.alert(
       '',
       'Product will be deliverd to you soon 😊',
